@@ -1,0 +1,103 @@
+CREATE DATABASE Ventas;
+
+USE Ventas; 
+
+-- Tabla Clientes
+CREATE TABLE Clientes (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    direccion VARCHAR(255),
+    telefono VARCHAR(20)
+);
+
+-- Tabla Productos
+CREATE TABLE Productos (
+    id_producto INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10, 2) NOT NULL,
+    stock INT NOT NULL,
+    categoria VARCHAR(255)
+);
+
+-- Tabla Ordenes
+CREATE TABLE Ordenes (
+    id_orden INT AUTO_INCREMENT PRIMARY KEY,
+    id_cliente INT NOT NULL,
+    fecha DATETIME NOT NULL,
+    FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente) ON DELETE CASCADE
+);
+
+-- Tabla Orden_Producto
+CREATE TABLE Orden_Producto (
+    id_orden INT NOT NULL,
+    id_producto INT NOT NULL,
+    cantidad INT NOT NULL,
+    PRIMARY KEY (id_orden, id_producto),
+    FOREIGN KEY (id_orden) REFERENCES Ordenes(id_orden) ON DELETE CASCADE,
+    FOREIGN KEY (id_producto) REFERENCES Productos(id_producto) ON DELETE RESTRICT
+);
+
+-- Índice para búsquedas frecuentes por email en la tabla Clientes
+CREATE INDEX idx_email_clientes ON Clientes (email);
+
+-- Índice para búsquedas frecuentes por categoría en la tabla Productos
+CREATE INDEX idx_categoria_productos ON Productos (categoria);
+
+-- Índice para búsquedas y agrupaciones por fecha en la tabla Ordenes
+CREATE INDEX idx_fecha_ordenes ON Ordenes (fecha);
+
+-- Índice para búsquedas por id_producto en la tabla Orden_Producto
+CREATE INDEX idx_producto_orden_producto ON Orden_Producto (id_producto);
+
+-- Índice para búsquedas por id_orden en la tabla Orden_Producto
+CREATE INDEX idx_orden_orden_producto ON Orden_Producto (id_orden);
+
+INSERT INTO Clientes (nombre, email, direccion, telefono) VALUES
+('Juan Pérez', 'juan.perez@example.com', 'Calle Falsa 123', '123456789'),
+('María García', 'maria.garcia@example.com', 'Avenida Siempreviva 742', '987654321'),
+('Carlos López', 'carlos.lopez@example.com', 'Boulevard Central 45', '456123789'),
+('Ana Martínez', 'ana.martinez@example.com', 'Plaza Principal 10', '321654987'),
+('Luis Fernández', 'luis.fernandez@example.com', 'Carrera 5 No. 7-89', '159753468'),
+('Sofía Torres', 'sofia.torres@example.com', 'Callejón del Gato 99', '753951486'),
+('Miguel Ruiz', 'miguel.ruiz@example.com', 'Vía Láctea 55', '456852147'),
+('Lucía Díaz', 'lucia.diaz@example.com', 'Avenida de los Patos 333', '789456123'),
+('Pablo Morales', 'pablo.morales@example.com', 'Calle de la Luna 22', '123789456'),
+('Elena Gómez', 'elena.gomez@example.com', 'Camino del Sol 88', '987321654');
+
+INSERT INTO Productos (nombre, descripcion, precio, stock, categoria) VALUES
+('Laptop', 'Computadora portátil de alto rendimiento', 800.00, 20, 'Electrónica'),
+('Teléfono', 'Teléfono inteligente de última generación', 500.00, 50, 'Electrónica'),
+('Teclado', 'Teclado mecánico para gaming', 80.00, 100, 'Accesorios'),
+('Ratón', 'Ratón inalámbrico ergonómico', 30.00, 150, 'Accesorios'),
+('Monitor', 'Monitor 4K UHD de 27 pulgadas', 400.00, 25, 'Electrónica'),
+('Impresora', 'Impresora multifuncional con WiFi', 150.00, 40, 'Electrónica'),
+('Auriculares', 'Auriculares Bluetooth con cancelación de ruido', 120.00, 60, 'Accesorios'),
+('Cámara', 'Cámara digital con lente intercambiable', 900.00, 15, 'Fotografía'),
+('Mochila', 'Mochila para laptop resistente al agua', 50.00, 80, 'Accesorios'),
+('Disco Duro', 'Disco duro externo de 2TB', 100.00, 70, 'Almacenamiento');
+
+INSERT INTO Ordenes (id_cliente, fecha) VALUES
+(1, '2024-11-01 10:00:00'),
+(2, '2024-11-02 11:30:00'),
+(3, '2024-11-03 09:15:00'),
+(4, '2024-11-04 14:45:00'),
+(5, '2024-11-05 16:20:00'),
+(6, '2024-11-06 08:10:00'),
+(7, '2024-11-07 13:50:00'),
+(8, '2024-11-08 17:00:00'),
+(9, '2024-11-09 19:30:00'),
+(10, '2024-11-10 12:00:00');
+
+INSERT INTO Orden_Producto (id_orden, id_producto, cantidad) VALUES
+(1, 1, 2), (1, 2, 1), (1, 3, 1),
+(2, 4, 2), (2, 5, 1), (2, 6, 1),
+(3, 7, 1), (3, 8, 1), (3, 9, 2),
+(4, 10, 1), (4, 1, 1), (4, 2, 1),
+(5, 3, 1), (5, 4, 2), (5, 5, 1),
+(6, 6, 1), (6, 7, 1), (6, 8, 1),
+(7, 9, 1), (7, 10, 2), (7, 1, 1),
+(8, 2, 1), (8, 3, 1), (8, 4, 2),
+(9, 5, 1), (9, 6, 1), (9, 7, 1),
+(10, 8, 1), (10, 9, 2), (10, 10, 1);
